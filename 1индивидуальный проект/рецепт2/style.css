@@ -135,7 +135,19 @@
             text-decoration: none; 
             margin-top: 2rem; 
         }
-
+        
+        .sovet{
+            font-size: 1.4rem;
+            background: #fff2dc;
+            padding: 1rem 2.5rem;
+            border-radius: 80px;
+            display: inline-block;
+            margin-bottom: 2rem;
+            color: #4f3d2c;
+            font-weight: 500;
+            border: 2px dashed #faba7a;
+            margin: 15px;
+        }
         footer { 
             background: #4b3a2c; 
             color: #eedbcb; 
