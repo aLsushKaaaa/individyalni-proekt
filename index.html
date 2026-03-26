@@ -1,11 +1,424 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ru">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Завтрак-Тайм | Утро может быть добрым</title>
-    <link rel="stylesheet" href="style.css">
-    <link rel="shortcut icon" href="лого.jpg" type="image/x-icon">
+    <title>Завтрак-Тайм | Все рецепты на одной странице</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Roboto, system-ui, sans-serif;
+        }
+
+        body {
+            background-color: #fef9f0;
+            color: #2e3b3b;
+            line-height: 1.5;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Header */
+        .page-header {
+            background: #fff7e7;
+            box-shadow: 0 6px 18px rgba(251, 176, 84, 0.15);
+            padding: 1rem 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            backdrop-filter: blur(15px);
+            background-color: rgba(255, 247, 231, 0.9);
+            border-bottom: 2px solid #ffdbb5;
+        }
+
+        .header-container {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+        }
+
+        .logo {
+            font-size: 1.9rem;
+            font-weight: 800;
+            color: #7b4b2d;
+            text-decoration: none;
+            letter-spacing: -0.5px;
+            text-shadow: 2px 2px 0 #ffe1b3;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2.2rem;
+            font-weight: 600;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: #4f3f30;
+            font-size: 1.2rem;
+            padding: 0.5rem 0;
+            border-bottom: 3px solid transparent;
+            transition: 0.2s;
+            cursor: default;
+        }
+
+        .nav-links a:hover {
+            border-bottom-color: #f8b06b;
+            color: #a3541c;
+        }
+
+        /* Hero */
+        .hero {
+            background: linear-gradient(135deg, #fce6b4 0%, #ffd9b0 100%);
+            padding: 3rem 0 2.5rem 0;
+            text-align: center;
+            border-bottom-left-radius: 40px;
+            border-bottom-right-radius: 40px;
+            margin-bottom: 2rem;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.04);
+        }
+
+        .hero h1 {
+            font-size: 3.2rem;
+            font-weight: 700;
+            color: #3b2b1f;
+            text-shadow: 2px 2px 0 rgba(255,255,255,0.5);
+        }
+
+        .hero .sub {
+            font-size: 1.5rem;
+            font-weight: 300;
+            color: #5e4a36;
+            margin-top: 0.5rem;
+        }
+
+        .hero p {
+            max-width: 650px;
+            margin: 1.5rem auto 0;
+            font-size: 1.1rem;
+            background-color: rgba(255,255,240,0.7);
+            padding: 1rem 2rem;
+            border-radius: 60px;
+        }
+
+        /* Section titles */
+        .section-title {
+            font-size: 2.2rem;
+            font-weight: 600;
+            color: #7b4b2d;
+            margin-bottom: 2rem;
+            border-left: 10px solid #f8b06b;
+            padding-left: 1.5rem;
+            background: linear-gradient(to right, #fff3e0, transparent);
+        }
+
+        /* Полные рецепты */
+        .full-recipe {
+            background: white;
+            border-radius: 60px;
+            padding: 2.5rem;
+            margin: 2rem 0 3rem;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.05);
+            border: 1px solid #ffe0c0;
+        }
+
+        .recipe-header {
+            display: flex;
+            gap: 2rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        .recipe-header .recipe-img {
+            width: 120px;
+            height: 120px;
+            background: linear-gradient(145deg, #f2d9bf, #e8c9a8);
+            border-radius: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 4rem;
+        }
+
+        .recipe-header .recipe-title {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #543e2b;
+        }
+
+        .meta {
+            background: #ffeedb;
+            padding: 0.5rem 1.5rem;
+            border-radius: 50px;
+            display: inline-block;
+            font-size: 1.1rem;
+            margin-top: 0.5rem;
+        }
+
+        .calories {
+            background: #f8b06b20;
+            color: #c9782b;
+            padding: 0.5rem 1rem;
+            border-radius: 50px;
+            display: inline-block;
+            font-size: 0.9rem;
+            margin-left: 1rem;
+            font-weight: 600;
+        }
+
+        .ingredients-list, .steps-list {
+            background: #fff9f1;
+            padding: 1.5rem 2rem;
+            border-radius: 40px;
+            margin-top: 1rem;
+        }
+
+        .ingredients-list li, .steps-list li {
+            margin: 0.8rem 0;
+            font-size: 1.1rem;
+            list-style: none;
+            padding-left: 2rem;
+            position: relative;
+        }
+
+        .ingredients-list li::before {
+            content: "•";
+            color: #f8b06b;
+            font-size: 2rem;
+            position: absolute;
+            left: 0;
+            top: -5px;
+        }
+
+        .steps-list li::before {
+            content: "➤";
+            color: #f8b06b;
+            position: absolute;
+            left: 0;
+        }
+
+        h3 {
+            margin: 1.5rem 0 0.5rem 0;
+            color: #7b4b2d;
+        }
+
+        /* Дополнительные блоки */
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 2rem;
+            margin: 2rem 0 3rem;
+        }
+
+        .info-card {
+            background: white;
+            border-radius: 40px;
+            padding: 2rem;
+            box-shadow: 0 15px 30px -10px rgba(0,0,0,0.08);
+            border: 1px solid #ffe0c0;
+            transition: transform 0.2s;
+        }
+
+        .info-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .info-card h3 {
+            margin-top: 0;
+            margin-bottom: 1rem;
+            font-size: 1.6rem;
+        }
+
+        .info-card h3 span {
+            font-size: 2rem;
+            margin-right: 0.5rem;
+        }
+
+        .calories-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .calories-table th, .calories-table td {
+            padding: 0.8rem;
+            text-align: left;
+            border-bottom: 1px solid #ffe0c0;
+        }
+
+        .calories-table th {
+            color: #c9782b;
+            font-weight: 600;
+        }
+
+        .calories-table td:last-child {
+            font-weight: 600;
+            color: #543e2b;
+        }
+
+        .tip-list, .faq-list, .menu-list {
+            list-style: none;
+        }
+
+        .tip-list li, .faq-list li, .menu-list li {
+            margin: 1rem 0;
+            padding-left: 1.8rem;
+            position: relative;
+        }
+
+        .tip-list li::before {
+            content: "💡";
+            position: absolute;
+            left: 0;
+        }
+
+        .faq-list li::before {
+            content: "❓";
+            position: absolute;
+            left: 0;
+        }
+
+        .menu-list li::before {
+            content: "🍽️";
+            position: absolute;
+            left: 0;
+        }
+
+        .menu-day {
+            font-weight: 700;
+            color: #c9782b;
+        }
+
+        .season-badge {
+            display: inline-block;
+            background: #ffeedb;
+            padding: 0.5rem 1rem;
+            border-radius: 30px;
+            margin: 0.3rem;
+            font-size: 0.9rem;
+        }
+
+        .greeting-text {
+            font-size: 1.4rem;
+            background: #fff2dc;
+            padding: 1rem 2.5rem;
+            border-radius: 80px;
+            display: inline-block;
+            margin-bottom: 2rem;
+            color: #4f3d2c;
+            font-weight: 500;
+            border: 2px dashed #faba7a;
+        }
+
+        /* Отзывы */
+        .reviews-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 2rem;
+            margin: 2.5rem 0 3rem;
+        }
+
+        .review-item {
+            background: white;
+            border-radius: 40px;
+            padding: 1.8rem;
+            flex: 1 1 280px;
+            box-shadow: 0 10px 20px -5px rgba(216, 166, 106, 0.2);
+            border: 1px solid #fbe1c8;
+        }
+
+        .review-author {
+            font-weight: 700;
+            font-size: 1.2rem;
+            color: #673f20;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 0.8rem;
+        }
+
+        .review-author span {
+            background: #f8d7ad;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.3rem;
+        }
+
+        .review-text {
+            font-style: italic;
+            color: #2f403f;
+            margin-bottom: 0.7rem;
+        }
+
+        .review-rating {
+            color: #ff9933;
+            font-size: 1.2rem;
+            letter-spacing: 3px;
+        }
+
+        /* Footer */
+        footer {
+            background: #4b3a2c;
+            color: #eedbcb;
+            padding: 2.8rem 0;
+            margin-top: 4rem;
+            border-top-left-radius: 50px;
+            border-top-right-radius: 50px;
+        }
+
+        .footer-content {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            align-items: center;
+            gap: 1.5rem;
+        }
+
+        .footer-thanks p {
+            font-size: 1.3rem;
+            font-weight: 500;
+        }
+
+        .footer-contacts {
+            background: #5f4c3b;
+            padding: 1.2rem 2.5rem;
+            border-radius: 60px;
+        }
+
+        .footer-contacts span {
+            color: #ffe1b9;
+            font-size: 1.1rem;
+            margin: 0 1rem 0 0;
+            border-right: 1px solid #b59b83;
+            padding-right: 1rem;
+        }
+
+        .footer-contacts span:last-child {
+            border-right: none;
+        }
+
+        .footer-date {
+            font-size: 0.95rem;
+            opacity: 0.8;
+        }
+
+        @media (max-width: 700px) {
+            .hero h1 { font-size: 2.5rem; }
+            .footer-content { flex-direction: column; text-align: center; }
+            .recipe-header { flex-direction: column; text-align: center; }
+        }
+    </style>
 </head>
 <body>
     <header class="page-header">
@@ -14,8 +427,8 @@
                 🍳 Завтрак-Тайм
             </div>
             <nav class="nav-links">
-                <a>Рецепт дня</a>
-                <a>Все рецепты</a>
+                <a>Рецепты</a>
+                <a>Полезное</a>
                 <a>Отзывы</a>
             </nav>
         </div>
@@ -25,33 +438,36 @@
         <div class="container">
             <h1>Завтрак-Тайм</h1>
             <div class="sub">☀️ Утро может быть добрым!</div>
-            <p>Завтрак - это первый прием пищи в течение дня, который обеспечивает организм энергией и необходимыми питательными веществами. Здесь собраны все наши рецепты с полным описанием.</p>
+            <p>Завтрак — это первый прием пищи в течение дня, который обеспечивает организм энергией и необходимыми питательными веществами. Здесь собраны все наши рецепты с полным описанием, калорийностью и полезными советами.</p>
         </div>
     </section>
 
     <main class="container">
         <div class="greeting-text">
-            ✨ Все рецепты уже здесь - выбирай и готовь ✨
+            ✨ Все рецепты уже здесь — выбирай и готовь ✨
         </div>
 
-        <!-- ===== РЕЦЕПТ ДНЯ (сразу полный) ===== -->
+        <!-- ===== РЕЦЕПТ ДНЯ (первый) ===== -->
         <h2 class="section-title">🍳 Рецепт дня</h2>
         <div class="full-recipe">
             <div class="recipe-header">
-                <img src="гранола.jpg" alt="" class="recipe-img">
+                <div class="recipe-img">🥣</div>
                 <div>
                     <div class="recipe-title">Гранола с йогуртом и ягодами</div>
-                    <span class="meta">⏱️ 5 мин. | 🍽️ 1 порция</span>
+                    <div>
+                        <span class="meta">⏱️ 10 мин. | 🍽️ 1 порция</span>
+                        <span class="calories">🔥 260 ккал | 12г белков</span>
+                    </div>
                 </div>
             </div>
             <h3>📝 Ингредиенты:</h3>
             <ul class="ingredients-list">
-                <li>Гранола (готовая) - 50 г</li>
-                <li>Греческий йогурт - 150 г</li>
-                <li>Малина свежая - 50 г</li>
-                <li>Голубика - 30 г</li>
-                <li>Мята - несколько листиков</li>
-                <li>Мёд - 1 ч. ложка (по желанию)</li>
+                <li>Гранола (готовая) — 50 г</li>
+                <li>Греческий йогурт — 150 г</li>
+                <li>Малина свежая — 50 г</li>
+                <li>Голубика — 30 г</li>
+                <li>Мята — несколько листиков</li>
+                <li>Мёд — 1 ч. ложка (по желанию)</li>
             </ul>
             <h3>👩‍🍳 Приготовление:</h3>
             <ol class="steps-list">
@@ -63,193 +479,384 @@
             </ol>
         </div>
 
-        <!-- ===== ВСЕ РЕЦЕПТЫ (уже полные, без переходов) ===== -->
+        <!-- ===== ВСЕ РЕЦЕПТЫ ===== -->
         <h2 class="section-title">🔥 Все рецепты</h2>
 
         <!-- 1. Ягодный смузи-бол -->
         <div class="full-recipe">
             <div class="recipe-header">
-                <img src="/" alt="" class="recipe-img">
+                <div class="recipe-img">🥤</div>
                 <div>
                     <div class="recipe-title">Ягодный смузи-бол</div>
-                    <span class="meta">⏱️ 5 мин. | 🍽️ 1 порция</span>
+                    <div>
+                        <span class="meta">⏱️ 5 мин. | 🍽️ 1 порция</span>
+                        <span class="calories">🔥 228 ккал | 6г белков</span>
+                    </div>
                 </div>
             </div>
             <h3>📝 Ингредиенты:</h3>
             <ul class="ingredients-list">
-                <li>Замороженные ягоды (клубника, малина) - 150 г</li>
-                <li>Замороженный банан - 1 шт.</li>
-                <li>Йогурт натуральный - 100 мл</li>
-                <li>Украшение(топпинги): семена чиа, ягоды, кокосовая стружка.</li>
+                <li>Замороженные ягоды (клубника, малина) — 150 г</li>
+                <li>Банан — 1 шт.</li>
+                <li>Йогурт натуральный — 100 мл</li>
+                <li>Мёд — 1 ч. ложка</li>
+                <li>Гранола — 2 ст. ложки</li>
+                <li>Семена чиа — 1 ч. ложка</li>
             </ul>
             <h3>👩‍🍳 Приготовление:</h3>
             <ol class="steps-list">
-                <li>Налейте в блендер йогурт и начинайте взбивать, начинайте с низкой скорости, постепенно увеличивая её.</li>
-                <li>Если блендер не справляется, добавьте еще 1–2 столовые ложки жидкости, но не переборщите, чтобы масса осталась густой.</li>
-                <li>Переложите густую массу в глубокую тарелку.</li>
+                <li>В блендере смешайте замороженные ягоды, банан, йогурт и мёд до однородности.</li>
+                <li>Перелейте смузи в глубокую тарелку.</li>
+                <li>Сверху посыпьте гранолой и семенами чиа.</li>
                 <li>Украсьте свежими ягодами (по желанию).</li>
-                <li>Подавайте немедленно, пока основа не растаяла.</li>
+                <li>Подавайте сразу ложкой.</li>
             </ol>
         </div>
 
         <!-- 2. Тост с авокадо и яйцом пашот -->
         <div class="full-recipe">
             <div class="recipe-header">
-                <img src="/" alt="" class="recipe-img">
+                <div class="recipe-img">🥑</div>
                 <div>
                     <div class="recipe-title">Тост с авокадо и яйцом пашот</div>
-                    <span class="meta">⏱️ 10 мин. | 🍽️ 1 порция</span>
+                    <div>
+                        <span class="meta">⏱️ 10 мин. | 🍽️ 1 порция</span>
+                        <span class="calories">🔥 366 ккал | 14г белков</span>
+                    </div>
                 </div>
             </div>
             <h3>📝 Ингредиенты:</h3>
             <ul class="ingredients-list">
-                <li>Хлеб для тостов - 2 ломтика</li>
-                <li>Авокадо - 1/2 или 1 шт.</li>
-                <li>Яйцо - 1-2 шт.</li>
-                <li>Лимонный сок - 1 ч. ложка</li>
-                <li>Соль, перец - по вкусу</li>
-                <li>Уксус (для пашота) - 1 ст. ложка</li>
-                <li>Дополнительно(по желанию): твороженый сыр, слабосоленый лосось, помидоры черри или микрозелень.</li>
+                <li>Хлеб для тостов — 2 ломтика</li>
+                <li>Авокадо — 1 шт.</li>
+                <li>Яйцо — 2 шт.</li>
+                <li>Лимонный сок — 1 ч. ложка</li>
+                <li>Соль, перец — по вкусу</li>
+                <li>Уксус (для пашота) — 1 ст. ложка</li>
             </ul>
             <h3>👩‍🍳 Приготовление:</h3>
             <ol class="steps-list">
                 <li>Поджарьте хлеб в тостере или на сухой сковороде.</li>
                 <li>Разомните авокадо вилкой, добавьте лимонный сок, соль и перец.</li>
-                <li>Для яйца пашот: вскипятите воду и добавьте уксус, сделайте воронку, влейте в нее яйцо и варите 2-3 минуты.</li>
+                <li>Для яйца пашот: вскипятите воду с уксусом, сделайте воронку, влейте яйцо и варите 3 минуты.</li>
                 <li>Намажьте авокадо на тост, сверху выложите яйцо пашот.</li>
                 <li>Посыпьте перцем и любимыми специями.</li>
-                <li>Подавайте сразу/</li>
             </ol>
         </div>
 
         <!-- 3. Ленивая овсянка в банке -->
         <div class="full-recipe">
             <div class="recipe-header">
-                <img src="/" alt="" class="recipe-img">
+                <div class="recipe-img">🥣</div>
                 <div>
                     <div class="recipe-title">Ленивая овсянка в банке</div>
-                    <span class="meta">⏱️ 5 мин. + ночь | 🍽️ 1 порция</span>
+                    <div>
+                        <span class="meta">⏱️ 5 мин. + ночь | 🍽️ 1 порция</span>
+                        <span class="calories">🔥 286 ккал | 10г белков</span>
+                    </div>
                 </div>
             </div>
             <h3>📝 Ингредиенты:</h3>
             <ul class="ingredients-list">
-                <li>Овсяные хлопья (долгой варки) - 1/4 или 1/2 стакана</li>
-                <li>Молоко (или йогурт) - 1/3 стакана</li>
-                <li>Мёд - 1 ч. ложка</li>
-                <li>Семена чиа - 1 ч. ложка (опционально)</li>
+                <li>Овсяные хлопья (долгой варки) — 40 г</li>
+                <li>Молоко (или йогурт) — 100 мл</li>
+                <li>Банан — 1/2 шт.</li>
+                <li>Мёд — 1 ч. ложка</li>
+                <li>Семена чиа — 1 ч. ложка (опционально)</li>
                 <li>Ягоды для украшения</li>
             </ul>
             <h3>👩‍🍳 Приготовление:</h3>
             <ol class="steps-list">
-                <li>Насыпьте в стеклянную банку (объемом около 300–400 мл) овсянку, семена чиа и добавьте мед.</li>
-                <li>Залейте смесь молоком или йогуртом. Тщательно перемешайте ложкой или встряхните банку с закрытой крышкой, чтобы не осталось комочков чиа.</li>
-                <li>Плотно закройте банку и уберите в холодильник минимум на 4 часа, а лучше на всю ночь (8–10 часов).</li>
+                <li>В банку налейте молоко, добавьте мёд и перемешайте.</li>
+                <li>Засыпьте овсянку и семена чиа, снова перемешайте.</li>
+                <li>Разомните банан и добавьте в банку.</li>
+                <li>Закройте крышкой и уберите в холодильник на ночь.</li>
                 <li>Утром достаньте, перемешайте, добавьте свежие ягоды.</li>
-                <li>Подавайте.</li>
             </ol>
         </div>
 
         <!-- 4. Шакшука -->
         <div class="full-recipe">
             <div class="recipe-header">
-                <img src="/" alt="" class="recipe-img">
+                <div class="recipe-img">🍳</div>
                 <div>
                     <div class="recipe-title">Шакшука</div>
-                    <span class="meta">⏱️ 15-20 мин. | 🍽️ 2 порции</span>
+                    <div>
+                        <span class="meta">⏱️ 10 мин. | 🍽️ 2 порции</span>
+                        <span class="calories">🔥 270 ккал | 15г белков</span>
+                    </div>
                 </div>
             </div>
             <h3>📝 Ингредиенты:</h3>
             <ul class="ingredients-list">
-                <li>Яйца - 4 шт.</li>
-                <li>Помидоры в собственном соку - 400 г</li>
-                <li>Лук - 1 шт.</li>
-                <li>Перец болгарский - 1 шт.</li>
-                <li>Чеснок - 2 зубчика</li>
-                <li>Паприка, соль, перец - по вкусу</li>
+                <li>Яйца — 4 шт.</li>
+                <li>Помидоры в собственном соку — 400 г</li>
+                <li>Лук — 1 шт.</li>
+                <li>Перец болгарский — 1 шт.</li>
+                <li>Чеснок — 2 зубчика</li>
+                <li>Паприка, соль, перец — по вкусу</li>
             </ul>
             <h3>👩‍🍳 Приготовление:</h3>
             <ol class="steps-list">
-                <li>Мелко нарежьте лук и чеснок. Обжарьте их на сковороде с маслом до золотистого цвета (около 3-ех минут).</li>
-                <li>Добавьте томаты в собственном соку или готовый соус. Посолите, добавьте специи и прогрейте на среднем огне 3–5 минут до легкого загустения.</li>
-                <li>Сделайте ложкой небольшие углубления и аккуратно влейте яйца.</li>
-                <li>Накройте крышкой и готовьте 3–5 минуты, пока белок не схватится, а желток останется жидким.</li>
-                <li>Посыпте зеленью и подавайте прямо на сковороде с хлебом.</li>
+                <li>Обжарьте мелко нарезанный лук и перец до мягкости.</li>
+                <li>Добавьте чеснок и помидоры, тушите 5 минут.</li>
+                <li>Сделайте углубления и вбейте яйца.</li>
+                <li>Посолите, поперчите, накройте крышкой и готовьте 5-7 минут.</li>
+                <li>Подавайте с хлебом.</li>
             </ol>
         </div>
 
         <!-- 5. Горячие бутерброды -->
         <div class="full-recipe">
             <div class="recipe-header">
-                <img src="/" alt="" class="recipe-img">
+                <div class="recipe-img">🥪</div>
                 <div>
                     <div class="recipe-title">Горячие бутерброды</div>
-                    <span class="meta">⏱️ 5 мин. | 🍽️ 2 порции</span>
+                    <div>
+                        <span class="meta">⏱️ 5 мин. | 🍽️ 2 порции</span>
+                        <span class="calories">🔥 352 ккал | 16г белков</span>
+                    </div>
                 </div>
             </div>
             <h3>📝 Ингредиенты:</h3>
             <ul class="ingredients-list">
-                <li>Хлеб (батон) - 4 ломтика</li>
-                <li>Сыр твёрдый - 100 г</li>
-                <li>Ветчина или колбаса - 100 г</li>
-                <li>Масло сливочное - 20 г</li>
+                <li>Хлеб (батон) — 4 ломтика</li>
+                <li>Сыр твёрдый — 100 г</li>
+                <li>Ветчина или колбаса — 100 г</li>
+                <li>Масло сливочное — 20 г</li>
+                <li>Зелень по вкусу</li>
             </ul>
             <h3>👩‍🍳 Приготовление:</h3>
             <ol class="steps-list">
-                <li>Натрите сыр, нарежьте колбасу.</li>
+                <li>Натрите сыр, нарежьте ветчину и зелень, смешайте.</li>
                 <li>Выложите начинку на хлеб, накройте вторым кусочком.</li>
                 <li>Обжарьте на сливочном масле с двух сторон.</li>
                 <li>Подавайте горячими.</li>
             </ol>
         </div>
 
-        <!-- 6. Сырники  -->
+        <!-- 6. Сырники со сметаной -->
         <div class="full-recipe">
             <div class="recipe-header">
-                <img src="сырники.jpg" alt="" class="recipe-img">
+                <div class="recipe-img">🥞</div>
                 <div>
-                    <div class="recipe-title">Сырники</div>
-                    <span class="meta">⏱️ 15-20 мин. | 🍽️ 8-10 сырников</span>
+                    <div class="recipe-title">Сырники со сметаной</div>
+                    <div>
+                        <span class="meta">⏱️ 15 мин. | 🍽️ 8-10 сырников</span>
+                        <span class="calories">🔥 310 ккал | 18г белков</span>
+                    </div>
                 </div>
             </div>
             <h3>📝 Ингредиенты:</h3>
             <ul class="ingredients-list">
-                <li>Творог 9% - 500 г</li>
-                <li>Яйцо - 1 шт.</li>
-                <li>Манка - 2 ст. ложки</li>
-                <li>Сахар - 1 ст. ложки</li>
-                <li>Ванилин </li>
+                <li>Творог — 400 г</li>
+                <li>Яйцо — 1 шт.</li>
+                <li>Мука — 3-4 ст. ложки</li>
+                <li>Сахар — 2 ст. ложки</li>
+                <li>Ванилин — щепотка</li>
+                <li>Сметана для подачи</li>
             </ul>
             <h3>👩‍🍳 Приготовление:</h3>
             <ol class="steps-list">
-                <li>Смешайте творог, яйцо, сахар, ванилин и манку, вилкой перемешайте массу.</li>
-                <li>Оставьте твороженую массу на 5-10 минут для того чтобы манка набухла.</li>
-                <li>Разделите твороженую массу на равные части, сформируйте сырники.</li>
-                <li>Обжарьте сырники на скородке на растительном масле на среднем огне до золотистой корочки.</li>
-                <li>Подавайте сразу.</li>
+                <li>Смешайте творог, яйцо, сахар и ванилин.</li>
+                <li>Добавьте муку, замесите мягкое тесто.</li>
+                <li>Сформируйте сырники, обваляйте в муке.</li>
+                <li>Обжарьте на масле по 3-4 минуты с каждой стороны.</li>
+                <li>Подавайте со сметаной.</li>
             </ol>
         </div>
 
-        <!-- ===== ОТЗЫВЫ ===== -->
+        <!-- ===== ВСЕ ДОПОЛНИТЕЛЬНЫЕ БЛОКИ (теперь ПОСЛЕ рецептов) ===== -->
+        
+        <!-- ТАБЛИЦА КАЛОРИЙНОСТИ -->
+        <h2 class="section-title">📊 Калорийность блюд</h2>
+        <div class="info-card">
+            <h3><span>🔥</span> Энергетическая ценность на порцию</h3>
+            <table class="calories-table">
+                <thead>
+                    <tr><th>Блюдо</th><th>Белки</th><th>Жиры</th><th>Углеводы</th><th>Ккал</th></tr>
+                </thead>
+                <tbody>
+                    <tr><td>Гранола с йогуртом и ягодами</td><td>12 г</td><td>8 г</td><td>35 г</td><td>260 ккал</td></tr>
+                    <tr><td>Ягодный смузи-бол</td><td>6 г</td><td>4 г</td><td>42 г</td><td>228 ккал</td></tr>
+                    <tr><td>Тост с авокадо и яйцом пашот</td><td>14 г</td><td>22 г</td><td>28 г</td><td>366 ккал</td></tr>
+                    <tr><td>Ленивая овсянка в банке</td><td>10 г</td><td>6 г</td><td>48 г</td><td>286 ккал</td></tr>
+                    <tr><td>Шакшука</td><td>15 г</td><td>18 г</td><td>12 г</td><td>270 ккал</td></tr>
+                    <tr><td>Горячие бутерброды</td><td>16 г</td><td>20 г</td><td>32 г</td><td>352 ккал</td></tr>
+                    <tr><td>Сырники со сметаной</td><td>18 г</td><td>14 г</td><td>28 г</td><td>310 ккал</td></tr>
+                </tbody>
+            </table>
+            <p style="margin-top: 1rem; font-size: 0.9rem; color: #7f5a38;">* Данные приблизительные и могут варьироваться в зависимости от ингредиентов</p>
+        </div>
+
+        <!-- СОВЕТЫ ШЕФ-ПОВАРА -->
+        <h2 class="section-title">👨‍🍳 Советы шеф-повара</h2>
+        <div class="info-grid">
+            <div class="info-card">
+                <h3><span>💡</span> Идеальный завтрак</h3>
+                <ul class="tip-list">
+                    <li>Завтракайте в течение часа после пробуждения</li>
+                    <li>Сочетайте белки, жиры и сложные углеводы</li>
+                    <li>Пейте стакан воды за 20 минут до еды</li>
+                    <li>Не пропускайте завтрак — это главный прием пищи</li>
+                </ul>
+            </div>
+            <div class="info-card">
+                <h3><span>🥑</span> Лайфхаки для рецептов</h3>
+                <ul class="tip-list">
+                    <li>Авокадо будет мягче, если подержать его рядом с бананом</li>
+                    <li>Для идеального пашота добавляйте уксус в воду</li>
+                    <li>Овсянку можно заваривать с вечера — экономия времени</li>
+                    <li>Сырники получаются пышнее, если творог протереть через сито</li>
+                </ul>
+            </div>
+            <div class="info-card">
+                <h3><span>⚡</span> Быстрые замены</h3>
+                <ul class="tip-list">
+                    <li>Йогурт → растительный йогурт (для веганов)</li>
+                    <li>Мёд → кленовый сироп или стевия</li>
+                    <li>Пшеничный хлеб → цельнозерновой или безглютеновый</li>
+                    <li>Сметана → греческий йогурт (меньше калорий)</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- НЕДЕЛЬНОЕ МЕНЮ -->
+        <h2 class="section-title">📅 Недельное меню</h2>
+        <div class="info-card">
+            <h3><span>🗓️</span> План завтраков на 7 дней</h3>
+            <ul class="menu-list">
+                <li><span class="menu-day">ПОНЕДЕЛЬНИК:</span> Ягодный смузи-бол + чашка зеленого чая</li>
+                <li><span class="menu-day">ВТОРНИК:</span> Ленивая овсянка в банке с ягодами</li>
+                <li><span class="menu-day">СРЕДА:</span> Тост с авокадо и яйцом пашот</li>
+                <li><span class="menu-day">ЧЕТВЕРГ:</span> Сырники со сметаной и вареньем</li>
+                <li><span class="menu-day">ПЯТНИЦА:</span> Шакшука с хрустящим хлебом</li>
+                <li><span class="menu-day">СУББОТА:</span> Горячие бутерброды с сыром и ветчиной</li>
+                <li><span class="menu-day">ВОСКРЕСЕНЬЕ:</span> Гранола с йогуртом и свежими ягодами</li>
+            </ul>
+            <p style="margin-top: 1rem; font-size: 0.9rem; color: #7f5a38;">💡 Совет: готовьте овсянку и смузи-бол с вечера, чтобы сэкономить утреннее время</p>
+        </div>
+
+        <!-- СЕЗОННЫЕ РЕКОМЕНДАЦИИ -->
+        <h2 class="section-title">🌿 Сезонные рекомендации</h2>
+        <div class="info-grid">
+            <div class="info-card">
+                <h3><span>🌸</span> Весна</h3>
+                <div>
+                    <span class="season-badge">🍓 клубника</span>
+                    <span class="season-badge">🥬 шпинат</span>
+                    <span class="season-badge">🍋 лимон</span>
+                    <span class="season-badge">🌱 молодая зелень</span>
+                </div>
+                <p style="margin-top: 1rem;">Добавляйте свежую зелень в смузи и тосты — это заряд витаминов после зимы.</p>
+            </div>
+            <div class="info-card">
+                <h3><span>☀️</span> Лето</h3>
+                <div>
+                    <span class="season-badge">🍑 персики</span>
+                    <span class="season-badge">🍉 арбуз</span>
+                    <span class="season-badge">🍒 черешня</span>
+                    <span class="season-badge">🍇 виноград</span>
+                </div>
+                <p style="margin-top: 1rem;">Освежающие смузи-болы с сезонными ягодами — идеальный летний завтрак.</p>
+            </div>
+            <div class="info-card">
+                <h3><span>🍂</span> Осень</h3>
+                <div>
+                    <span class="season-badge">🍎 яблоки</span>
+                    <span class="season-badge">🎃 тыква</span>
+                    <span class="season-badge">🍐 груши</span>
+                    <span class="season-badge">🍯 мёд</span>
+                </div>
+                <p style="margin-top: 1rem;">Добавляйте тыквенное пюре в овсянку или запекайте яблоки с корицей.</p>
+            </div>
+            <div class="info-card">
+                <h3><span>❄️</span> Зима</h3>
+                <div>
+                    <span class="season-badge">🍊 апельсины</span>
+                    <span class="season-badge">🍌 бананы</span>
+                    <span class="season-badge">🌰 орехи</span>
+                    <span class="season-badge">🍯 имбирь</span>
+                </div>
+                <p style="margin-top: 1rem;">Горячие бутерброды и сырники согревают, а цитрусовые заряжают витамином C.</p>
+            </div>
+        </div>
+
+        <!-- FAQ (ВОПРОСЫ-ОТВЕТЫ) -->
+        <h2 class="section-title">❓ Часто задаваемые вопросы</h2>
+        <div class="info-grid">
+            <div class="info-card">
+                <h3><span>🍽️</span> Можно ли приготовить с вечера?</h3>
+                <ul class="faq-list">
+                    <li><strong>Смузи-бол</strong> — лучше готовить утром, иначе теряет текстуру</li>
+                    <li><strong>Овсянка в банке</strong> — идеально готовить на ночь</li>
+                    <li><strong>Сырники</strong> — можно заморозить полуфабрикаты</li>
+                </ul>
+            </div>
+            <div class="info-card">
+                <h3><span>🥑</span> Чем заменить авокадо?</h3>
+                <ul class="faq-list">
+                    <li>Паштет из нута (хумус) — отличная альтернатива</li>
+                    <li>Запеченный сладкий перец</li>
+                    <li>Сыр рикотта с зеленью</li>
+                </ul>
+            </div>
+            <div class="info-card">
+                <h3><span>🏃‍♀️</span> Какой завтрак для спортсменов?</h3>
+                <ul class="faq-list">
+                    <li>Гранола с йогуртом + протеиновый порошок</li>
+                    <li>Сырники с рисовой мукой и творогом 9%</li>
+                    <li>Овсянка с орехами и бананом</li>
+                </ul>
+            </div>
+            <div class="info-card">
+                <h3><span>🌱</span> Веганские варианты?</h3>
+                <ul class="faq-list">
+                    <li>Йогурт → кокосовый или соевый</li>
+                    <li>Яйцо пашот → тофу с черной солью (кала намак)</li>
+                    <li>Сырники → из тофу с бананом и овсяной мукой</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- ПОЛЕЗНЫЕ ЗАМЕТКИ -->
+        <h2 class="section-title">📝 Полезные заметки</h2>
+        <div class="info-grid">
+            <div class="info-card">
+                <h3><span>💧</span> Водный баланс</h3>
+                <p>Начинайте утро со стакана теплой воды с лимоном — это запускает метаболизм и улучшает пищеварение. Через 20-30 минут можно завтракать.</p>
+            </div>
+            <div class="info-card">
+                <h3><span>⏰</span> Идеальное время</h3>
+                <p>Лучшее время для завтрака — с 7:00 до 9:00 утра. Это период, когда организм лучше всего усваивает питательные вещества.</p>
+            </div>
+            <div class="info-card">
+                <h3><span>⚖️</span> Контроль порций</h3>
+                <p>Размер порции не должен превышать размер вашего кулака. Сбалансированный завтрак = 1/2 тарелки овощей/фруктов, 1/4 белка, 1/4 углеводов.</p>
+            </div>
+        </div>
+
+        <!-- ===== ОТЗЫВЫ (после дополнительных блоков) ===== -->
         <h2 class="section-title">💬 Отзывы</h2>
         <div class="reviews-grid">
             <div class="review-item">
                 <div class="review-author"><span>👩‍🍳</span> Елена С.</div>
-                <div class="review-text">«Очень удобно, что все рецепты на одной странице! Шакшука теперь мой фаворит.»</div>
+                <div class="review-text">«Очень удобно, что все рецепты на одной странице! Шакшука теперь мой фаворит. Отдельное спасибо за таблицу калорийности!»</div>
                 <div class="review-rating">★★★★★</div>
             </div>
             <div class="review-item">
                 <div class="review-author"><span>🧑‍🍳</span> Дмитрий П.</div>
-                <div class="review-text">«Ленивая овсянка — спасение для занятых. Беру рецепт с собой на работу.»</div>
+                <div class="review-text">«Ленивая овсянка — спасение для занятых. А недельное меню очень помогло разнообразить завтраки.»</div>
                 <div class="review-rating">★★★★☆</div>
             </div>
             <div class="review-item">
                 <div class="review-author"><span>👩‍🌾</span> Анна К.</div>
-                <div class="review-text">«Дети обожают сырники. Спасибо за понятные инструкции!»</div>
+                <div class="review-text">«Дети обожают сырники. Спасибо за понятные инструкции и советы шеф-повара!»</div>
                 <div class="review-rating">★★★★★</div>
             </div>
             <div class="review-item">
                 <div class="review-author"><span>🧑‍🍳</span> Михаил В.</div>
-                <div class="review-text">«Горячие бутерброды за 5 минут — отличный вариант, когда нет времени.»</div>
+                <div class="review-text">«Горячие бутерброды за 5 минут — отличный вариант. Классно, что указана калорийность, слежу за питанием.»</div>
                 <div class="review-rating">★★★★★</div>
             </div>
         </div>
@@ -262,11 +869,12 @@
                 <span>Завтрак-Тайм — завтраки с душой</span>
             </div>
             <div class="footer-contacts">
-                <span>hellozavtrak@mail.ru</span>
-                <span>+7 (987) 419-22-09</span>
+                <span>hello@zavtrak.ru</span>
+                <span>+7 (999) 123-45-67</span>
+                <span>Telegram</span>
             </div>
             <div class="footer-date">
-                 Все права защищены
+                📅 26 марта 2026 · Все права вкусны
             </div>
         </div>
     </footer>
