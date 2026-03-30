@@ -59,12 +59,14 @@
             padding: 0.5rem 0;
             border-bottom: 3px solid transparent;
             transition: 0.2s;
-            cursor: default;
         }
 
         .nav-links a:hover {
             border-bottom-color: #f8b06b;
             color: #a3541c;
+        }
+        html {
+            scroll-behavior: smooth;
         }
 
         /* Hero */
